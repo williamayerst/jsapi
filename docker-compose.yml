@@ -1,0 +1,28 @@
+version: '3.3'
+
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+       - ./data/local_init.sql:/data/application/init.sql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: donthackpls
+       MYSQL_DATABASE: users
+       MYSQL_USER: jsapi
+       MYSQL_PASSWORD: jsapi
+   api:
+     depends_on:
+       - db
+     image: williamayerst/jsapi:latest
+     ports:
+         - "8002:3002"
+     restart: always
+     environment:
+       CLIENT_DB_HOST: db
+       CLIENT_DB_USER: jsapi
+       CLIENT_DB_PASSWORD: jsapi
+       CLIENT_DB_NAME: users
+volumes:
+    db_data: {}
